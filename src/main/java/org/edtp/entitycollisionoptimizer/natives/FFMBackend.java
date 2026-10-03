@@ -1,6 +1,6 @@
 package org.edtp.entitycollisionoptimizer.natives;
 
-import org.edtp.entitycollisionoptimizer.EntityCollisionOptimizer;
+import org.edtp.entitycollisionoptimizer.EcoLog;
 import net.minecraft.world.phys.AABB;
 
 import java.io.File;
@@ -116,7 +116,7 @@ public final class FFMBackend {
         try {
             loadNativeLibrary();
             initialized = true;
-            EntityCollisionOptimizer.LOGGER.info("FFM collision backend initialized");
+            EcoLog.LOGGER.info("FFM collision backend initialized");
         } catch (Throwable failure) {
             if (!(failure instanceof Error)) resetHandles();
             throw callFailure(
@@ -501,12 +501,21 @@ public final class FFMBackend {
         }
     }
 
+    private static InputStream openNativeResource(String resourcePath) {
+        InputStream stream = FFMBackend.class.getResourceAsStream(resourcePath);
+        if (stream != null) {
+            return stream;
+        }
+        // Leaves plugin build places natives under the extracted package tree.
+        return FFMBackend.class.getResourceAsStream("/org/edtp/entitycollisionoptimizer" + resourcePath);
+    }
+
     private static void loadNativeLibrary() throws IOException {
         String libraryName = System.mapLibraryName("EntityCollisionOptimizer");
         String resourcePath = platformNativePath() + libraryName;
         File extractedLibrary;
 
-        try (InputStream libraryStream = EntityCollisionOptimizer.class.getResourceAsStream(resourcePath)) {
+        try (InputStream libraryStream = openNativeResource(resourcePath)) {
             if (libraryStream == null) {
                 throw new FileNotFoundException("Cannot find native library resource " + resourcePath);
             }
@@ -520,7 +529,7 @@ public final class FFMBackend {
             }
         }
 
-        EntityCollisionOptimizer.LOGGER.info(
+        EcoLog.LOGGER.info(
                 "Extracted FFM native library {} to {}",
                 resourcePath,
                 extractedLibrary.getAbsolutePath()

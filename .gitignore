@@ -26,3 +26,6 @@ __pycache__/
 /analysis_samples/
 /mspt_analysis/
 /extract_mspt_curves.py
+
+# Native build outputs
+native/out/

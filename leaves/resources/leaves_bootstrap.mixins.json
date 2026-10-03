@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8.7",
+  "package": "org.edtp.entitycollisionoptimizer.leaves.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "target": "@env(PREINIT)",
+  "mixins": [
+    "LeavesCommandsMixin",
+    "LeavesLifecycleMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

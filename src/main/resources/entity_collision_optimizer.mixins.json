@@ -1,9 +1,10 @@
 {
   "required": true,
-  "minVersion": "0.8",
+  "minVersion": "0.8.7",
   "package": "org.edtp.entitycollisionoptimizer.mixin",
   "plugin": "org.edtp.entitycollisionoptimizer.mixin.BodyMixinPlugin",
-  "compatibilityLevel": "JAVA_25",
+  "compatibilityLevel": "JAVA_21",
+  "target": "@env(PREINIT)",
   "mixins": [
     "BodyFieldConsumersMixin",
     "InterfaceBodyFieldConsumersMixin",
@@ -22,8 +23,6 @@
     "PalettedContainerMixin",
     "ScoreboardMixin",
     "ServerPlayerMixin",
-    "PersistentEntitySectionManagerAccessor",
-    "ServerLevelAccessor",
     "ServerLevelMixin"
   ],
   "injectors": {

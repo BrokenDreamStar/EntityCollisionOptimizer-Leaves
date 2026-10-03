@@ -11,12 +11,6 @@ import java.util.function.BooleanSupplier;
 
 @Mixin(ServerLevel.class)
 public abstract class ServerLevelMixin {
-    @Inject(method = "<init>", at = @At("RETURN"))
-    /* Attach the entity storage to the server level after initialization */
-    private void entityCollisionOptimizer$attachEntityStorage(CallbackInfo ci) {
-        CollisionFrame.attach((ServerLevel) (Object) this);
-    }
-
     /** Begin a collision frame before entity ticking of each tick */
     @Inject(
             method = "tick(Ljava/util/function/BooleanSupplier;)V",

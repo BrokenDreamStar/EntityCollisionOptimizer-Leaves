@@ -1,0 +1,18 @@
+{
+  "name": "EntityCollisionOptimizer",
+  "version": "1.0.0-mc26.1-alpha.10-leaves.1",
+  "main": "starm.eco.leaves.EcoLeavesPlugin",
+  "api-version": "26.1.2",
+  "description": "Entity collision acceleration for Leaves 26.1.2 (plugin-form port of EntityCollisionOptimizer by water2004/wiyuka).",
+  "authors": ["water2004", "wiyuka", "StarM"],
+  "features": {
+    "required": ["mixin"]
+  },
+  "mixin": {
+    "package-name": "org.edtp.entitycollisionoptimizer",
+    "mixins": [
+      "entity_collision_optimizer.mixins.json",
+      "leaves_bootstrap.mixins.json"
+    ]
+  }
+}

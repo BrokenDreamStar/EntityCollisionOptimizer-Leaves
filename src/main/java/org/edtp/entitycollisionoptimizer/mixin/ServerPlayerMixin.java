@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin {
-    @Inject(method = "setGameMode", at = @At("RETURN"))
+    @Inject(method = "setGameMode(Lnet/minecraft/world/level/GameType;)Z", at = @At("RETURN"))
     private void entityCollisionOptimizer$onSetGameMode(
             GameType gameType,
             CallbackInfoReturnable<Boolean> cir

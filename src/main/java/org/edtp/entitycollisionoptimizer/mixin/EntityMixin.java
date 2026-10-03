@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.objectweb.asm.Opcodes;
 
 @Mixin(Entity.class)
@@ -96,6 +97,7 @@ public abstract class EntityMixin implements CollisionCacheState {
     @Inject(method = "setRemoved", at = @At("RETURN"))
     private void entityCollisionOptimizer$onSetRemoved(
             Entity.RemovalReason reason,
+            org.bukkit.event.entity.EntityRemoveEvent.Cause cause,
             CallbackInfo ci
     ) {
         entityCollisionOptimizer$invalidateCollisionCache();
@@ -105,7 +107,7 @@ public abstract class EntityMixin implements CollisionCacheState {
         }
     }
 
-    @Inject(method = {"baseTick", "setPosRaw"}, at = @At(value = "FIELD",
+    @Inject(method = {"baseTick", "setPosRaw(DDDZ)V"}, at = @At(value = "FIELD",
             target = "Lnet/minecraft/world/entity/Entity;inBlockState:Lnet/minecraft/world/level/block/state/BlockState;",
             opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER))
     private void eco$onInBlockStateExpired(CallbackInfo ci) {
@@ -142,8 +144,8 @@ public abstract class EntityMixin implements CollisionCacheState {
         ((CollisionCacheState) passenger).entityCollisionOptimizer$invalidateCollisionCache();
     }
 
-    @Inject(method = "removePassenger", at = @At("RETURN"))
-    private void entityCollisionOptimizer$onRemovePassenger(Entity passenger, CallbackInfo ci) {
+    @Inject(method = "removePassenger(Lnet/minecraft/world/entity/Entity;)Z", at = @At("RETURN"))
+    private void entityCollisionOptimizer$onRemovePassenger(Entity passenger, CallbackInfoReturnable<Boolean> cir) {
         CollisionCacheEpochs.invalidateVehicles();
         entityCollisionOptimizer$invalidateCollisionCache();
         ((CollisionCacheState) passenger).entityCollisionOptimizer$invalidateCollisionCache();
