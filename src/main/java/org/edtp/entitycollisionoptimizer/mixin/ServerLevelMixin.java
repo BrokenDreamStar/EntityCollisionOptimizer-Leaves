@@ -11,6 +11,12 @@ import java.util.function.BooleanSupplier;
 
 @Mixin(ServerLevel.class)
 public abstract class ServerLevelMixin {
+    @Inject(method = "<init>", at = @At("RETURN"))
+    /* Enable native query serving only after the level is fully constructed */
+    private void entityCollisionOptimizer$engageQueries(CallbackInfo ci) {
+        CollisionFrame.engage((ServerLevel) (Object) this);
+    }
+
     /** Begin a collision frame before entity ticking of each tick */
     @Inject(
             method = "tick(Ljava/util/function/BooleanSupplier;)V",

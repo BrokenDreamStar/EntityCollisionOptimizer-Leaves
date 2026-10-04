@@ -13,7 +13,6 @@
     "EntityMixin",
     "EntityTrackingMixin",
     "EntityBodyMixin",
-    "EntitySectionStorageMixin",
     "EntityMovementMixin",
     "VoxelGeometryMixin",
     "LevelMixin",

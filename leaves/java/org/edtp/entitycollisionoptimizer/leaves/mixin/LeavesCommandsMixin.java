@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import org.edtp.entitycollisionoptimizer.commands.CollisionOptimizerCommand;
+import org.edtp.entitycollisionoptimizer.leaves.EcoVerifyCommand;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -40,6 +41,7 @@ public abstract class LeavesCommandsMixin {
     private void eco$tryRegister() {
         if (eco$registered.compareAndSet(false, true)) {
             CollisionOptimizerCommand.register(this.getDispatcher());
+            EcoVerifyCommand.register(this.getDispatcher());
         }
     }
 }

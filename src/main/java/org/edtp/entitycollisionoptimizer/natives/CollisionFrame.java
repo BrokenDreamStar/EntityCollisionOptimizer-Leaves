@@ -12,6 +12,7 @@ import net.minecraft.world.scores.Team;
 import org.edtp.entitycollisionoptimizer.collision.CollisionCacheState;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
@@ -24,11 +25,21 @@ public final class CollisionFrame {
     // Use a concurrent map to allow for parallel ticking of multiple levels, as in Worldthreader.
     private static final ConcurrentMap<ServerLevel, LevelCollisionFrame> LEVEL_FRAMES =
             new ConcurrentHashMap<>();
+    private static final Set<ServerLevel> QUERY_LEVELS = ConcurrentHashMap.newKeySet();
     private CollisionFrame() {
     }
 
     public static void begin(ServerLevel level) {
         LEVEL_FRAMES.computeIfAbsent(level, ignored -> new LevelCollisionFrame()).begin(level);
+    }
+
+    /** Marks a fully constructed level as eligible for native query serving. */
+    public static void engage(ServerLevel level) {
+        QUERY_LEVELS.add(level);
+    }
+
+    public static boolean queriesEnabled(ServerLevel level) {
+        return QUERY_LEVELS.contains(level);
     }
 
     /** Bootstrap from the level's tracked entities (Leaves/Moonrise entity lookup); tracking callbacks own membership afterwards. */
@@ -52,14 +63,14 @@ public final class CollisionFrame {
         LEVEL_FRAMES.clear();
     }
 
-    /** EntitySectionStorage.getEntities through the native index. */
+    /** Vanilla-shaped box queries served through the native index. */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static void getEntities(ServerLevel level, EntityTypeTest type, AABB box,
             AbortableIterationConsumer consumer) {
         frameFor(level).getEntities(type, box, consumer);
     }
 
-    /** Untyped EntitySectionStorage.getEntities through the native index. */
+    /** Untyped vanilla-shaped box queries served through the native index. */
     @SuppressWarnings("rawtypes")
     public static void getEntities(ServerLevel level, AABB box,
             AbortableIterationConsumer consumer) {
