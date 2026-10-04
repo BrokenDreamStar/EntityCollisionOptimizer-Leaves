@@ -1,19 +1,55 @@
 #!/bin/zsh
 # Builds dist/EntityCollisionOptimizer-Leaves.jar
-#   - mojmap classes compiled against the Leaves 26.1.2 runtime jar (no Fabric remap)
+#   - mojmap classes compiled against the Leaves runtime (no Fabric remap)
 #   - darwin-arm64 native library from native/ sources
 #   - leaves-plugin.json descriptor + both mixin configs
+#
+# Classpath sources:
+#   SRV=<server dir>   reuse an installed Leaves server (default $HOME/Minecraft/Leaves26.1.2)
+#   LEAVES_JAR=<jar>   no server install: bootstrap from a leavesclip launcher jar; the
+#                      launcher also supplies the compile-time mixin/MixinExtras classes
 set -e
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-SRV="${SRV:-/Users/starm/Minecraft/Leaves26.1.2}"
-SRVJAR="$SRV/versions/26.1.2/leaves-26.1.2.jar"
-GRADLE_CACHES="$HOME/.gradle/caches/modules-2/files-2.1"
-SPONGE_MIXIN="$GRADLE_CACHES/net.fabricmc/sponge-mixin/0.17.4+mixin.0.8.7/5f66cc9f59b8efaa942155a3d5a30599bf6640dd/sponge-mixin-0.17.4+mixin.0.8.7.jar"
-MIXIN_EXTRAS="$GRADLE_CACHES/io.github.llamalad7/mixinextras-fabric/0.5.5/d1055b99c0ab08a8403fe2da3d79ca28e6340a76/mixinextras-fabric-0.5.5.jar"
+SRV="${SRV:-$HOME/Minecraft/Leaves26.1.2}"
+LEAVES_JAR="${LEAVES_JAR:-}"
+BOOT="$ROOT/build/bootstrap"
 
-CP="$SRVJAR:$SPONGE_MIXIN:$MIXIN_EXTRAS:$(find "$SRV/libraries" -name '*.jar' | tr '\n' ':')"
+LAUNCHER="$LEAVES_JAR"
+if [[ -z "$LAUNCHER" && -d "$SRV" ]]; then
+  LAUNCHER=("$SRV"/leaves-*.jar(N))
+  LAUNCHER="${LAUNCHER[1]:-}"
+fi
+if [[ -z "$LAUNCHER" ]]; then
+  print -u2 "error: set SRV=<Leaves server dir> or LEAVES_JAR=<leavesclip launcher jar>"
+  exit 1
+fi
+
+MOJMAP=""
+LIBS=""
+if [[ -d "$SRV/libraries" ]]; then
+  MOJMAP=("$SRV"/versions/*/*.jar(N))
+  MOJMAP="${MOJMAP[1]:-}"
+  LIBS="$SRV/libraries"
+fi
+if [[ -z "$MOJMAP" || -z "$LIBS" ]]; then
+  MOJMAP=("$BOOT/server"/versions/*/*.jar(N))
+  MOJMAP="${MOJMAP[1]:-}"
+  LIBS="$BOOT/server/libraries"
+  if [[ -z "$MOJMAP" || ! -d "$LIBS" ]]; then
+    echo "> bootstrapping the Leaves runtime (downloads vanilla, needs network)"
+    mkdir -p "$BOOT/server"
+    ( cd "$BOOT/server" && java -Dleavesclip.patchonly=true -jar "$LAUNCHER" --nogui )
+    MOJMAP=("$BOOT/server"/versions/*/*.jar(N))
+    MOJMAP="${MOJMAP[1]:-}"
+    LIBS="$BOOT/server/libraries"
+  fi
+fi
+echo "> runtime jar: $MOJMAP"
+echo "> libraries:   $LIBS"
+
+CP="$MOJMAP:$LAUNCHER:$(find "$LIBS" -name '*.jar' | tr '\n' ':')"
 
 echo "> compiling java (release 25)"
 rm -rf build/plugin-classes && mkdir -p build/plugin-classes
