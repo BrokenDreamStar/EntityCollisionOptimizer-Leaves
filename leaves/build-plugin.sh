@@ -16,6 +16,13 @@ SRV="${SRV:-$HOME/Minecraft/Leaves26.1.2}"
 LEAVES_JAR="${LEAVES_JAR:-}"
 BOOT="$ROOT/build/bootstrap"
 
+# The plugin descriptor reports the upstream mod version.
+UPSTREAM_VERSION="$(sed -nE 's/^mod_version=(.*)$/\1/p' gradle.properties | head -1)"
+if [[ -z "$UPSTREAM_VERSION" ]]; then
+  print -u2 "error: mod_version not found in gradle.properties"
+  exit 1
+fi
+
 LAUNCHER="$LEAVES_JAR"
 if [[ -z "$LAUNCHER" && -d "$SRV" ]]; then
   LAUNCHER=("$SRV"/leaves-*.jar(N))
@@ -46,6 +53,7 @@ if [[ -z "$MOJMAP" || -z "$LIBS" ]]; then
     LIBS="$BOOT/server/libraries"
   fi
 fi
+echo "> version:     $UPSTREAM_VERSION (gradle.properties mod_version)"
 echo "> runtime jar: $MOJMAP"
 echo "> libraries:   $LIBS"
 
@@ -110,7 +118,8 @@ rm -rf "$STAGE" && mkdir -p "$STAGE"
 cp -r build/plugin-classes/* "$STAGE/"
 cp src/main/resources/entity_collision_optimizer.mixins.json "$STAGE/"
 cp leaves/resources/leaves_bootstrap.mixins.json "$STAGE/"
-cp leaves/resources/leaves-plugin.json "$STAGE/"
+sed -E "s/(\"version\"[[:space:]]*:[[:space:]]*\")[^\"]*(\")/\1$UPSTREAM_VERSION\2/" \
+  leaves/resources/leaves-plugin.json > "$STAGE/leaves-plugin.json"
 
 packaged=0
 for dir in native/out/*(/N); do
