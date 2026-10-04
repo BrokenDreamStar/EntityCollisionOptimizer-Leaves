@@ -58,11 +58,11 @@ jobs:
           path: x64-natives
 
       - name: Collect the x64 natives
+        # macos-x64 targets Intel Macs only; Apple Silicon uses the arm64 native built below.
         run: |
           mkdir -p native/out
           mv x64-natives/win-x64 native/out/windows-x64
           mv x64-natives/linux-x64 native/out/linux-x64
-          mv x64-natives/macos-x64 native/out/macos-x64
           rm -rf x64-natives
 
       - name: Build
