@@ -137,5 +137,6 @@ if (( ! packaged )); then
 fi
 
 mkdir -p dist
-jar cf dist/EntityCollisionOptimizer-Leaves.jar -C "$STAGE" .
-echo "> done: $(pwd)/dist/EntityCollisionOptimizer-Leaves.jar ($(du -h dist/EntityCollisionOptimizer-Leaves.jar | cut -f1))"
+JAR_NAME="EntityCollisionOptimizer-Leaves-$UPSTREAM_VERSION.jar"
+jar cf "dist/$JAR_NAME" -C "$STAGE" .
+echo "> done: $(pwd)/dist/$JAR_NAME ($(du -h "dist/$JAR_NAME" | cut -f1))"

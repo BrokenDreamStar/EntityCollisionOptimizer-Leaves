@@ -74,7 +74,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: EntityCollisionOptimizer-Leaves
-          path: dist/EntityCollisionOptimizer-Leaves.jar
+          path: dist/EntityCollisionOptimizer-Leaves*.jar
           if-no-files-found: error
           retention-days: 14
 
@@ -99,6 +99,6 @@ jobs:
           case "$GITHUB_REF_NAME" in
             *alpha*|*beta*|*rc*) flags+=(--prerelease) ;;
           esac
-          gh release create "$GITHUB_REF_NAME" EntityCollisionOptimizer-Leaves.jar \
+          gh release create "$GITHUB_REF_NAME" EntityCollisionOptimizer-Leaves-*.jar \
             --repo "$GITHUB_REPOSITORY" --title "$GITHUB_REF_NAME" \
             --generate-notes --verify-tag "${flags[@]}"
