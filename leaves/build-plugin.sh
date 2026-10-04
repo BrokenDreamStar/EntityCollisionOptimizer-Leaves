@@ -7,7 +7,7 @@ set -e
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-SRV=/Users/starm/Minecraft/Leaves26.1.2
+SRV="${SRV:-/Users/starm/Minecraft/Leaves26.1.2}"
 SRVJAR="$SRV/versions/26.1.2/leaves-26.1.2.jar"
 GRADLE_CACHES="$HOME/.gradle/caches/modules-2/files-2.1"
 SPONGE_MIXIN="$GRADLE_CACHES/net.fabricmc/sponge-mixin/0.17.4+mixin.0.8.7/5f66cc9f59b8efaa942155a3d5a30599bf6640dd/sponge-mixin-0.17.4+mixin.0.8.7.jar"

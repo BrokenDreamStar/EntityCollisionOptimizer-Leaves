@@ -2,7 +2,8 @@ name: Build
 
 on:
   push:
-    branches: [ "**" ]
+    # The leaves-* branches build the Leaves plugin with leaves/build-plugin.sh, not the Fabric mod.
+    branches-ignore: [ "leaves-*" ]
 
 permissions:
   contents: read

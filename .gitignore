@@ -23,9 +23,13 @@ __pycache__/
 # Local analysis artifacts and editor state.
 /.vscode/
 /bin/
+.DS_Store
 /analysis_samples/
 /mspt_analysis/
 /extract_mspt_curves.py
 
 # Native build outputs
 native/out/
+
+# 本地验证脚本：依赖本机 Leaves 服务端目录，不入库
+/leaves/run-*.sh
