@@ -1,7 +1,7 @@
 {
   "name": "EntityCollisionOptimizer",
   "version": "1.0.0-mc26.1-alpha.10-leaves.1",
-  "main": "starm.eco.leaves.EcoLeavesPlugin",
+  "main": "team.starm.eco.leaves.EcoLeavesPlugin",
   "api-version": "26.1.2",
   "description": "Entity collision acceleration for Leaves 26.1.2 (plugin-form port of EntityCollisionOptimizer by water2004/wiyuka).",
   "authors": ["water2004", "wiyuka", "StarM"],

@@ -1,4 +1,4 @@
-package starm.eco.leaves;
+package team.starm.eco.leaves;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
