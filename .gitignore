@@ -33,3 +33,8 @@ native/out/
 
 # 本地验证脚本：依赖本机 Leaves 服务端目录，不入库
 /leaves/run-*.sh
+
+# 文档与说明：仅保留根 README
+/docs/
+*.md
+!/README.md
